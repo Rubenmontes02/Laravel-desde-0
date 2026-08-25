@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Nota;
+use App\Models\Categoria;
 use Illuminate\Http\Request;
 
 class NotaController extends Controller
@@ -11,8 +12,9 @@ class NotaController extends Controller
     public function index()
     {
         $notas = Nota::latest()->get();
-
-        return view('notas.index', ['notas' => $notas]);
+        $categorias = Categoria::all();
+        
+        return view('notas.index', ['notas' => $notas, 'categorias' => $categorias]);
     }
 
     // Atiende POST /notas: valida el texto enviado por el formulario y lo guarda.
@@ -20,6 +22,7 @@ class NotaController extends Controller
     {
         $datos = $request->validate([
             'texto' => 'required|string|max:50',
+            'categoria_id' => 'nullable|exists:categorias,id',
         ]);
 
         Nota::create($datos);
