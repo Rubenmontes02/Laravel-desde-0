@@ -1,0 +1,38 @@
+# Nota: tu MySQL de pruebas vive en otra máquina, así que aquí NO declaramos
+# un servicio "mysql" — solo app (PHP-FPM) y nginx. El .env apuntará
+# directamente a la IP/host de esa máquina externa.
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Tu UID/GID en el host (ruben=1002), para que el contenedor cree
+        # archivos con el mismo dueño y no haga falta "chown" manual.
+        UID: "1002"
+        GID: "1002"
+    container_name: pruebas_app_php
+    volumes:
+      # Monta el código local dentro del contenedor: así al editar archivos
+      # en tu editor, el contenedor los ve al instante sin reconstruir la imagen.
+      - .:/var/www/html
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: pruebas_app_nginx
+    ports:
+      # <puerto en tu máquina>:<puerto dentro del contenedor>
+      - "8089:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

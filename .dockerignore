@@ -1,0 +1,21 @@
+# No metemos vendor/: el Dockerfile hace "composer install" dentro del contenedor.
+vendor
+node_modules
+
+.git
+.gitignore
+
+# NUNCA debe entrar al build context: contiene credenciales reales.
+.env
+.env.*
+!.env.example
+
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+
+docker
+compose.yaml
+Dockerfile
+README.md
