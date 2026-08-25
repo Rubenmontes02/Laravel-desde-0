@@ -26,4 +26,30 @@ class NotaController extends Controller
 
         return redirect('/notas');
     }
+
+    // Atiende DELETE /notas/{nota}: borra la nota indicada.
+    public function destroy(Nota $nota)
+    {
+        $nota->delete();
+
+        return redirect('/notas');
+    }
+
+    // Atiende GET /notas/{nota}/edit: muestra el formulario ya relleno.
+    public function edit(Nota $nota)
+    {
+        return view('notas.edit', ['nota' => $nota]);
+    }
+
+    // Atiende PUT /notas/{nota}: valida el texto nuevo y actualiza la fila.
+    public function update(Request $request, Nota $nota)
+    {
+        $datos = $request->validate([
+            'texto' => 'required|string|max:50',
+        ]);
+
+        $nota->update($datos);
+
+        return redirect('/notas');
+    }
 }
