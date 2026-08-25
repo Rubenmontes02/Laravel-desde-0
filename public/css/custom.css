@@ -1,0 +1,15 @@
+:root {
+    --color-rosa: #c869ff;
+    --color-rosa-oscuro: #b542f8;
+}
+
+.btn-rosa {
+    background-color: var(--color-rosa);
+    border-color: var(--color-rosa-oscuro);
+    color: white;
+}
+
+.btn-rosa:hover {
+    background-color: var(--color-rosa-oscuro);
+    color: white;
+}
