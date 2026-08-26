@@ -35,7 +35,7 @@
         @forelse ($notas as $nota)
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 {{ $nota->texto }}
-                <small class="text-muted">{{ $nota->categoria->categoria ?? 'Sin categoría' }}</small>
+                <small class="text-muted">{{ $nota->categoria_nombre ?? 'Sin categoría' }}</small>
 
 
                 <div class="d-flex gap-2">

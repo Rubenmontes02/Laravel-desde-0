@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Nota;
-use App\Models\Categoria;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class NotaController extends Controller
 {
     // Atiende GET /notas: pide todas las notas a la BD y las pasa a la vista.
     public function index()
     {
-        $notas = Nota::latest()->get();
-        $categorias = Categoria::all();
-        
+        $notas = DB::connection('mysql_pruebas')->table('notas')
+            ->leftJoin('categorias', 'notas.categoria_id', '=', 'categorias.id')
+            ->select('notas.*', 'categorias.categoria as categoria_nombre')
+            ->orderBy('notas.created_at', 'desc')
+            ->get();
+
+        $categorias = DB::connection('mysql_pruebas')->table('categorias')->get();
+
         return view('notas.index', ['notas' => $notas, 'categorias' => $categorias]);
     }
 
@@ -25,33 +29,47 @@ class NotaController extends Controller
             'categoria_id' => 'nullable|exists:categorias,id',
         ]);
 
-        Nota::create($datos);
+        DB::connection('mysql_pruebas')->table(
+            'notas')->insert([
+            'texto' => $datos['texto'],
+            'categoria_id' => $datos['categoria_id'] ?? null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         return redirect('/notas');
     }
 
-    // Atiende DELETE /notas/{nota}: borra la nota indicada.
-    public function destroy(Nota $nota)
+    // Atiende DELETE /notas/{id}: borra la nota indicada.
+    public function destroy($id)
     {
-        $nota->delete();
+        DB::connection('mysql_pruebas')->table('notas')->where('id', $id)->delete();
 
         return redirect('/notas');
     }
 
-    // Atiende GET /notas/{nota}/edit: muestra el formulario ya relleno.
-    public function edit(Nota $nota)
+    // Atiende GET /notas/{id}/edit: muestra el formulario ya relleno.
+    public function edit($id)
     {
-        return view('notas.edit', ['nota' => $nota]);
+        $nota = DB::connection('mysql_pruebas')->table('notas')->where('id', $id)->first();
+        $categorias = DB::connection('mysql_pruebas')->table('categorias')->get();
+
+        return view('notas.edit', ['nota' => $nota, 'categorias' => $categorias]);
     }
 
-    // Atiende PUT /notas/{nota}: valida el texto nuevo y actualiza la fila.
-    public function update(Request $request, Nota $nota)
+    // Atiende PUT /notas/{id}: valida el texto nuevo y actualiza la fila.
+    public function update(Request $request, $id)
     {
         $datos = $request->validate([
             'texto' => 'required|string|max:50',
+            'categoria_id' => 'nullable|exists:categorias,id',
         ]);
 
-        $nota->update($datos);
+        DB::connection('mysql_pruebas')->table('notas')->where('id', $id)->update([
+            'texto' => $datos['texto'],
+            'categoria_id' => $datos['categoria_id'] ?? null,
+            'updated_at' => now(),
+        ]);
 
         return redirect('/notas');
     }
