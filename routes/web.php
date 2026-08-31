@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\NotaController;
+use App\Http\Controllers\TareaController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,4 +27,14 @@ Route::prefix('notas')->name('notas.')->group(function () {
 
     // DELETE /notas/{id} -> borra la nota indicada.
     Route::delete('/{id}', [NotaController::class, 'destroy'])->name('destroy');
+});
+
+
+// Rutas de Tareas
+Route::prefix('tareas')->name('tareas.')->group(function () {
+    Route::get('/', [TareaController::class, 'index'])->name('index');
+    Route::post('/', [TareaController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [TareaController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [TareaController::class, 'update'])->name('update');
+    Route::delete('/{id}', [TareaController::class, 'destroy'])->name('destroy');
 });
