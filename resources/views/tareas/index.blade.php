@@ -34,15 +34,20 @@
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 {{ $tarea->tarea }} - {{ $tarea->completada ? 'Completada' : 'Pendiente' }}
                 <small class="text-muted">{{ $tarea->proyecto ?? 'Sin proyecto' }}</small>
-                <div class="d-flex gap-2">
-                    <a href="/tareas/{{ $tarea->id }}/edit" class="btn btn-sm btn-outline-secondary bi bi-pencil-square"></a>
+                <small class="text-muted">Usuario: {{ $tarea->user_name ?? 'Sin usuario' }}</small>
+                
+                @if (auth()->user()->name === $tarea->user_name)
+                    <div class="d-flex gap-2">
+                        <a href="/tareas/{{ $tarea->id }}/edit" class="btn btn-sm btn-outline-secondary bi bi-pencil-square"></a>
 
-                    <form action="/tareas/{{ $tarea->id }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-outline-danger bi bi-trash"></button>
-                    </form>
-                </div>
+                        <form action="/tareas/{{ $tarea->id }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-outline-danger bi bi-trash"></button>
+                        </form>
+                    </div>
+                @endif
+
             </li>
 
 
