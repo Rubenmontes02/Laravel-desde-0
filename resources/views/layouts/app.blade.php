@@ -17,6 +17,22 @@
 </head>
 <body>
     <div class="container mt-5" style="max-width: 500px;">
+        {{-- @auth / @endauth: solo se muestra si HAY sesión iniciada --}}
+        @auth
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <small class="text-muted">Sesión: {{ auth()->user()->name }}</small>
+
+                <form action="/logout" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">Cerrar sesión</button>
+                </form>
+
+                <a href="/inicio" class="btn btn-sm btn-outline-secondary">Menu Inicio</a>
+            </div>
+        @endauth
+
+        
+
         {{-- Aquí es donde cada vista hija mete su contenido propio --}}
         @yield('content')
     </div>
