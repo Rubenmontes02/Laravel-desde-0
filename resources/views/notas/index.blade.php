@@ -36,17 +36,19 @@
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 {{ $nota->texto }}
                 <small class="text-muted">{{ $nota->categoria_nombre ?? 'Sin categoría' }}</small>
+                <small class='text-muted'>Usuario: {{$nota->user_name ?? 'Sin usuario'}}</small>
 
+                @if (auth()->user()->id === $nota->user_id)
+                    <div class="d-flex gap-2">
+                        <a href="/notas/{{ $nota->id }}/edit" class="btn btn-sm btn-outline-secondary bi bi-pencil-square"></a>
 
-                <div class="d-flex gap-2">
-                    <a href="/notas/{{ $nota->id }}/edit" class="btn btn-sm btn-outline-secondary bi bi-pencil-square"></a>
-
-                    <form action="/notas/{{ $nota->id }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-outline-danger bi bi-trash"></button>
-                    </form>
-                </div>
+                        <form action="/notas/{{ $nota->id }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-outline-danger bi bi-trash"></button>
+                        </form>
+                    </div>
+                @endif
             </li>
         @empty
             <li class="list-group-item text-muted">Todavía no hay notas.</li>
